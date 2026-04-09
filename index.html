@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)file:///C:/Users/Jose/Downloads/index_2.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 La Academia de Lucía</title>
+<link href="./indes_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0a1e; --card: #1a1035;
+    --accent1: #ff6eb4; --accent2: #a78bfa;
+    --accent3: #34d399; --accent4: #fbbf24; --accent5: #60a5fa;
+    --text: #f0e6ff; --soft: #8b7cc8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; }
+  .container { max-width: 700px; margin: 0 auto; padding: 24px 16px; }
+  .header { text-align: center; margin-bottom: 24px; }
+  .logo {
+    font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 7vw, 2.8rem);
+    background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent5));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .subtitle { color: var(--soft); font-size: 0.9rem; margin-top: 4px; font-weight: 600; }
+
+  .stats { display: flex; gap: 10px; margin-bottom: 18px; justify-content: center; flex-wrap: wrap; }
+  .stat-pill {
+    background: var(--card); border: 1.5px solid rgba(167,139,250,0.25);
+    border-radius: 50px; padding: 7px 16px;
+    display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.88rem;
+  }
+  .stat-value { color: var(--accent2); }
+
+  /* MODE BUTTONS */
+  .mode-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .mode-btn {
+    background: var(--card); border: 2.5px solid rgba(167,139,250,0.15);
+    border-radius: 16px; padding: 12px 8px; cursor: pointer;
+    text-align: center; transition: all 0.2s; color: var(--text);
+    font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700;
+  }
+  .mode-btn:hover { border-color: var(--accent2); transform: translateY(-2px); }
+  .mode-btn.active { border-color: var(--accent1); background: rgba(255,110,180,0.12); }
+  .mode-icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+  .mode-name { display: block; font-size: 0.8rem; font-weight: 800; }
+  .mode-desc { display: block; font-size: 0.68rem; color: var(--soft); margin-top: 2px; }
+
+  /* DIFFICULTY */
+  .difficulty-bar { display: flex; gap: 8px; margin-bottom: 18px; justify-content: center; }
+  .diff-btn {
+    flex: 1; max-width: 110px; padding: 8px 0;
+    border-radius: 50px; border: 2px solid transparent;
+    background: var(--card); color: var(--soft);
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.8rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .diff-btn[data-diff="1"].active { border-color: var(--accent3); color: var(--accent3); background: rgba(52,211,153,0.1); }
+  .diff-btn[data-diff="2"].active { border-color: var(--accent4); color: var(--accent4); background: rgba(251,191,36,0.1); }
+  .diff-btn[data-diff="3"].active { border-color: var(--accent1); color: var(--accent1); background: rgba(255,110,180,0.1); }
+
+  /* GAME CARD */
+  .game-card {
+    background: var(--card); border: 1.5px solid rgba(167,139,250,0.2);
+    border-radius: 24px; padding: 24px 20px; margin-bottom: 16px; position: relative; overflow: hidden;
+  }
+  .game-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent5));
+  }
+  .question-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; color: var(--soft); text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .qnum { background: linear-gradient(135deg, var(--accent2), var(--accent1)); color: white; border-radius: 50px; padding: 2px 10px; font-size: 0.7rem; }
+
+  .progress-dots { display: flex; gap: 5px; justify-content: center; margin-bottom: 14px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.1); transition: background 0.3s; }
+  .dot.done-ok { background: var(--accent3); }
+  .dot.done-bad { background: var(--accent1); }
+  .dot.current { background: var(--accent2); box-shadow: 0 0 7px var(--accent2); }
+
+  .timer-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .timer-bar-wrap { flex: 1; height: 7px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+  .timer-bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent3), var(--accent5)); transition: width 0.1s linear, background 0.5s; }
+  .timer-bar.urgent { background: linear-gradient(90deg, var(--accent1), var(--accent4)); }
+  .timer-label { font-size: 0.85rem; font-weight: 800; color: var(--soft); min-width: 28px; text-align: right; }
+
+  .question-text { font-size: clamp(1.1rem, 3.5vw, 1.5rem); font-weight: 800; line-height: 1.45; margin-bottom: 20px; white-space: pre-line; }
+
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .opt-btn {
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 13px; padding: 13px 8px; color: var(--text);
+    font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: center; gap: 7px;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent2); background: rgba(167,139,250,0.12); transform: translateY(-2px); }
+  .opt-btn.correct { border-color: var(--accent3); background: rgba(52,211,153,0.15); animation: popIn 0.3s ease; }
+  .opt-btn.wrong { border-color: var(--accent1); background: rgba(255,110,180,0.12); animation: shake 0.4s ease; }
+  .opt-btn:disabled { cursor: not-allowed; }
+  .opt-letter { font-size: 0.7rem; font-weight: 900; background: rgba(255,255,255,0.1); border-radius: 5px; padding: 2px 6px; }
+
+  .input-wrap { display: flex; gap: 10px; }
+  .answer-input {
+    flex: 1; background: rgba(255,255,255,0.06); border: 2px solid rgba(167,139,250,0.3);
+    border-radius: 13px; padding: 13px 16px; color: var(--text);
+    font-family: 'Fredoka One', cursive; font-size: 1.3rem; outline: none;
+    transition: border-color 0.2s; text-align: center;
+  }
+  .answer-input:focus { border-color: var(--accent2); }
+  .submit-btn {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    border: none; border-radius: 13px; padding: 13px 18px;
+    color: white; font-family: 'Fredoka One', cursive; font-size: 1rem; cursor: pointer; transition: transform 0.15s;
+  }
+  .submit-btn:hover { transform: scale(1.05); }
+
+  .feedback {
+    margin-top: 13px; border-radius: 11px; padding: 11px 14px;
+    font-weight: 700; font-size: 0.88rem; display: none; animation: fadeIn 0.3s ease; line-height: 1.5;
+  }
+  .feedback.show { display: flex; align-items: flex-start; gap: 9px; }
+  .feedback.ok { background: rgba(52,211,153,0.12); border: 1.5px solid rgba(52,211,153,0.35); }
+  .feedback.bad { background: rgba(255,110,180,0.1); border: 1.5px solid rgba(255,110,180,0.3); }
+
+  .next-btn {
+    width: 100%; margin-top: 11px; background: linear-gradient(135deg, var(--accent2), var(--accent5));
+    border: none; border-radius: 13px; padding: 13px; color: white;
+    font-family: 'Fredoka One', cursive; font-size: 1.05rem; cursor: pointer; display: none; transition: transform 0.15s;
+  }
+  .next-btn:hover { transform: scale(1.02); }
+  .next-btn.show { display: block; animation: fadeIn 0.3s ease; }
+
+  /* RESULTS */
+  .results-card {
+    background: var(--card); border: 1.5px solid rgba(167,139,250,0.3);
+    border-radius: 24px; padding: 30px 22px; text-align: center; display: none;
+  }
+  .results-card.show { display: block; animation: fadeIn 0.4s ease; }
+  .results-emoji { font-size: 3.5rem; margin-bottom: 10px; display: block; }
+  .results-title { font-family: 'Fredoka One', cursive; font-size: 1.8rem; background: linear-gradient(135deg, var(--accent4), var(--accent1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; }
+  .results-score { font-size: 3rem; font-weight: 900; color: var(--accent3); margin: 14px 0 4px; font-family: 'Fredoka One', cursive; }
+  .results-detail { color: var(--soft); font-size: 0.9rem; margin-bottom: 14px; }
+  .results-msg { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+  .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; }
+  .badge { background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 50px; padding: 5px 13px; font-size: 0.76rem; font-weight: 700; color: var(--soft); }
+  .badge.earned { border-color: var(--accent4); color: var(--accent4); background: rgba(251,191,36,0.08); }
+  .play-again-btn {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    border: none; border-radius: 13px; padding: 13px 32px;
+    color: white; font-family: 'Fredoka One', cursive; font-size: 1.1rem; cursor: pointer; transition: transform 0.15s;
+  }
+  .play-again-btn:hover { transform: scale(1.04); }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes popIn { 0%{transform:scale(1)} 50%{transform:scale(1.06)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">🌟 La Academia de Lucía</div>
+    <p class="subtitle">Las misiones matemáticas de Lucía ✨</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat-pill">⭐ Puntos: <span class="stat-value" id="score">0</span></div>
+    <div class="stat-pill">🔥 Racha: <span class="stat-value" id="streak">0</span></div>
+    <div class="stat-pill">🏅 Récord: <span class="stat-value" id="best">0</span></div>
+  </div>
+
+  <div class="mode-selector">
+    <button class="mode-btn active" id="btn-arith" onclick="selectMode(&#39;arith&#39;)">
+      <span class="mode-icon">🔢</span>
+      <span class="mode-name">Cálculo Mental</span>
+      <span class="mode-desc">Sumas, restas, potencias…</span>
+    </button>
+    <button class="mode-btn" id="btn-logic" onclick="selectMode(&#39;logic&#39;)">
+      <span class="mode-icon">🧩</span>
+      <span class="mode-name">Lógica</span>
+      <span class="mode-desc">Series y patrones</span>
+    </button>
+    <button class="mode-btn" id="btn-geo" onclick="selectMode(&#39;geo&#39;)">
+      <span class="mode-icon">📐</span>
+      <span class="mode-name">Geometría</span>
+      <span class="mode-desc">Figuras y áreas</span>
+    </button>
+    <button class="mode-btn" id="btn-word" onclick="selectMode(&#39;word&#39;)">
+      <span class="mode-icon">💡</span>
+      <span class="mode-name">Acertijos</span>
+      <span class="mode-desc">Enigmas matemáticos</span>
+    </button>
+  </div>
+
+  <div class="difficulty-bar">
+    <button class="diff-btn active" data-diff="1" id="diff1" onclick="selectDiff(1)">🌱 Fácil</button>
+    <button class="diff-btn" data-diff="2" id="diff2" onclick="selectDiff(2)">⚡ Medio</button>
+    <button class="diff-btn" data-diff="3" id="diff3" onclick="selectDiff(3)">🚀 Difícil</button>
+  </div>
+
+  <div class="game-card" id="gameCard">
+    <div class="question-label">Pregunta <span class="qnum" id="qnum">1/10</span></div>
+    <div class="progress-dots" id="dots"><div class="dot done-bad" id="dot0"></div><div class="dot current" id="dot1"></div><div class="dot" id="dot2"></div><div class="dot" id="dot3"></div><div class="dot" id="dot4"></div><div class="dot" id="dot5"></div><div class="dot" id="dot6"></div><div class="dot" id="dot7"></div><div class="dot" id="dot8"></div><div class="dot" id="dot9"></div></div>
+    <div class="timer-row">
+      <div class="timer-bar-wrap"><div class="timer-bar urgent" id="timerBar" style="width: 0%;"></div></div>
+      <div class="timer-label" id="timerLabel">0</div>
+    </div>
+    <div class="question-text" id="questionText">67 + 53 = ?</div>
+    <div id="answerArea"><div class="options"><button class="opt-btn" onclick="checkMC(this,&#39;115&#39;)" disabled=""><span class="opt-letter">A</span> 115</button><button class="opt-btn" onclick="checkMC(this,&#39;120&#39;)" disabled=""><span class="opt-letter">B</span> 120</button><button class="opt-btn" onclick="checkMC(this,&#39;111&#39;)" disabled=""><span class="opt-letter">C</span> 111</button><button class="opt-btn" onclick="checkMC(this,&#39;105&#39;)" disabled=""><span class="opt-letter">D</span> 105</button></div></div>
+    <div class="feedback show bad" id="feedback"><span id="fbIcon">❌</span><span id="fbText"><strong>¡Casi!</strong> La respuesta era <strong>120</strong>.<br>La respuesta es 120</span></div>
+    <button class="next-btn show" id="nextBtn" onclick="nextQuestion()">Siguiente →</button>
+  </div>
+
+  <div class="results-card" id="resultsCard">
+    <span class="results-emoji" id="resEmoji">🌟</span>
+    <div class="results-title" id="resTitle"></div>
+    <div class="results-score" id="resScore"></div>
+    <div class="results-detail" id="resDetail"></div>
+    <div class="results-msg" id="resMsg"></div>
+    <div class="badges" id="resBadges"></div>
+    <button class="play-again-btn" onclick="startGame()">🚀 Jugar de nuevo</button>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+var TOTAL = 10;
+var mode = 'arith';
+var diff = 1;
+var score = 0, streak = 0, best = parseInt(localStorage.getItem('lucia_best') || '0');
+var current = 0, correct = 0, wrong = 0;
+var questions = [];
+var timerInterval = null;
+var timeLeft = 30, maxTime = 30;
+var answered = false;
+
+document.getElementById('best').textContent = best;
+
+// ── MODE / DIFF SELECTION ─────────────────────────────────────
+function selectMode(m) {
+  mode = m;
+  ['arith','logic','geo','word'].forEach(function(k) {
+    document.getElementById('btn-' + k).classList.toggle('active', k === m);
+  });
+  startGame();
+}
+
+function selectDiff(d) {
+  diff = d;
+  [1,2,3].forEach(function(k) {
+    document.getElementById('diff' + k).classList.toggle('active', k === d);
+  });
+  startGame();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function rand(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+
+function shuffle(arr) { return arr.sort(function() { return Math.random() - 0.5; }); }
+
+function makeMC(text, ans, time, lo, hi, explain) {
+  var wrongs = [];
+  var tries = 0;
+  while (wrongs.length < 3 && tries < 100) {
+    tries++;
+    var v = ans + rand(lo, hi);
+    if (v !== ans && v >= 0 && wrongs.indexOf(v) === -1) wrongs.push(v);
+  }
+  var options = shuffle(wrongs.concat([ans])).map(String);
+  return { text: text, type: 'mc', options: options, answer: String(ans), time: time, explain: explain || ('La respuesta es ' + ans) };
+}
+
+function makeInput(text, ans, time, explain) {
+  return { text: text, type: 'input', answer: String(ans), time: time, explain: explain || ('La respuesta es ' + ans) };
+}
+
+// ── GENERATORS ───────────────────────────────────────────────
+
+// ARITHMETIC
+function genArith() {
+  var qs = [];
+  while (qs.length < TOTAL) {
+    var q = diff === 1 ? arithEasy() : diff === 2 ? arithMed() : arithHard();
+    if (q) qs.push(q);
+  }
+  return qs;
+}
+
+function arithEasy() {
+  var t = rand(0, 3);
+  if (t === 0) { var a=rand(10,99),b=rand(10,99); return makeMC(a+' + '+b+' = ?', a+b, 30, -15, 15); }
+  if (t === 1) { var a=rand(20,99),b=rand(1,a-1); return makeMC(a+' - '+b+' = ?', a-b, 30, -10, 10); }
+  if (t === 2) { var a=rand(2,12),b=rand(2,12); return makeMC(a+' × '+b+' = ?', a*b, 30, -15, 20); }
+  var b=rand(2,12),ans=rand(2,12),a=b*ans; return makeMC(a+' ÷ '+b+' = ?', ans, 30, -5, 5);
+}
+
+function arithMed() {
+  var t = rand(0, 4);
+  if (t === 0) { var a=rand(100,999),b=rand(100,999); return makeMC(a+' + '+b+' = ?', a+b, 25, -50, 50); }
+  if (t === 1) { var b=rand(11,25),ans=rand(11,25),a=b*ans; return makeMC(a+' ÷ '+b+' = ?', ans, 25, -5, 5); }
+  if (t === 2) { var a=rand(2,15); return makeMC('¿Cuánto es '+a+'²?', a*a, 25, -20, 25); }
+  if (t === 3) { var p=[rand(2,9),rand(2,9),rand(2,9)]; return makeMC(p[0]+' + '+p[1]+' + '+p[2]+' = ?', p[0]+p[1]+p[2], 25, -8, 8); }
+  var a=rand(5,20),b=rand(5,20); return makeInput(a+' × ___ = '+(a*b), b, 25);
+}
+
+function arithHard() {
+  var t = rand(0, 4);
+  if (t === 0) { var a=rand(10,30),b=rand(10,30); return makeInput(a+' × '+b+' = ?', a*b, 20); }
+  if (t === 1) { var a=rand(2,9); return makeMC('¿Cuánto es '+a+'³?', a*a*a, 20, -40, 80); }
+  if (t === 2) {
+    var percs=[10,20,25,50,5], perc=percs[rand(0,4)];
+    var base=rand(2,20)*10, ans=base*perc/100;
+    return makeMC('¿El '+perc+'% de '+base+'?', ans, 20, -10, 20);
+  }
+  if (t === 3) { var n=rand(3,8); return makeMC('¿Cuánto es 1+2+3+...+'+n+'?', n*(n+1)/2, 20, -5, 10, 'Fórmula de Gauss: n×(n+1)/2'); }
+  var a=rand(2,9),b=rand(2,9),c=rand(2,9), ans=a*b+c;
+  return makeMC(a+' × '+b+' + '+c+' = ?', ans, 20, -10, 15);
+}
+
+// LOGIC
+function genLogic() {
+  var qs = [];
+  while (qs.length < TOTAL) {
+    var q = diff === 1 ? logicEasy() : diff === 2 ? logicMed() : logicHard();
+    if (q) qs.push(q);
+  }
+  return qs;
+}
+
+function logicEasy() {
+  var t = rand(0, 2);
+  if (t === 0) {
+    var start=rand(1,10), step=rand(1,5);
+    var seq=[start,start+step,start+2*step,start+3*step];
+    return makeMC('¿Qué número sigue?\n'+seq.join(', ')+', ___', start+4*step, 30, -5, 5, 'La diferencia entre términos es siempre '+step);
+  }
+  if (t === 1) {
+    var start=rand(1,5);
+    var seq=[start,start*2,start*4,start*8];
+    return makeMC('¿Qué número sigue?\n'+seq.join(', ')+', ___', start*16, 30, -8, 16, 'Cada término se multiplica por 2');
+  }
+  var evens=[2,4,6,8,10,12,14,16];
+  shuffle(evens); var pick=evens.slice(0,3);
+  var odd=rand(1,8)*2-1;
+  var all=shuffle(pick.concat([odd]));
+  return { text:'¿Cuál número NO encaja?\n'+all.join('    '), type:'mc', options:all.map(String), answer:String(odd), time:30, explain:odd+' es impar; los demás son pares' };
+}
+
+function logicMed() {
+  var t = rand(0, 3);
+  if (t === 0) {
+    var a=rand(1,3),b=rand(2,5);
+    var seq=[a,b,a+b,a+2*b,2*a+3*b];
+    return makeMC('¿Qué sigue? (suma los dos anteriores)\n'+seq.join(', ')+', ___', 3*a+5*b, 25, -5, 10, 'Tipo Fibonacci: cada término es la suma de los dos anteriores');
+  }
+  if (t === 1) {
+    var n=rand(4,8);
+    var seq=[];
+    for(var i=1;i<n;i++) seq.push(i*i);
+    return makeMC('¿Qué sigue? (cuadrados perfectos)\n'+seq.join(', ')+', ___', n*n, 25, -5, 10, 'Son los cuadrados: 1²,2²,3²...');
+  }
+  if (t === 2) {
+    var start=rand(2,5),a=rand(2,4),mult=rand(2,3);
+    var vals=[start];
+    for(var i=0;i<4;i++) { vals.push(vals[vals.length-1]+a); vals.push(vals[vals.length-1]*mult); }
+    var ans=vals[4]+a;
+    return makeMC('Patrón: +'+a+' luego ×'+mult+'\n'+vals.slice(0,5).join(', ')+', ___', ans, 25, -5, 12);
+  }
+  var r1=[rand(2,5),rand(2,5)]; r1.push(r1[0]+r1[1]);
+  var r2=[rand(2,5),rand(2,5)]; r2.push(r2[0]+r2[1]);
+  var r3=[rand(2,5),rand(2,5)]; var ans=r3[0]+r3[1];
+  return makeMC(r1[0]+' + '+r1[1]+' = '+r1[2]+'\n'+r2[0]+' + '+r2[1]+' = '+r2[2]+'\n'+r3[0]+' + '+r3[1]+' = ?', ans, 25, -5, 5);
+}
+
+function logicHard() {
+  var t = rand(0, 2);
+  if (t === 0) {
+    var a=rand(3,7),b=rand(2,4),start=rand(2,5);
+    var vals=[start];
+    for(var i=0;i<5;i++) {
+      if(i%2===0) vals.push(vals[vals.length-1]+a);
+      else vals.push(vals[vals.length-1]*b);
+    }
+    return makeInput('Dos reglas alternas: +'+a+' y ×'+b+'\n'+vals.slice(0,5).join(', ')+', ___', vals[4]+a, 20);
+  }
+  if (t === 1) {
+    var primes=[2,3,5,7,11,13,17,19,23,29];
+    var n=rand(4,7);
+    return makeMC('¿Cuál es el '+(n+1)+'° número primo?', primes[n], 20, -3, 5, 'Los primos son: 2,3,5,7,11,13,17,19,23,29...');
+  }
+  var candidates=[12,18,24,30,36,48,60];
+  var num=candidates[rand(0,candidates.length-1)];
+  var divs=0;
+  for(var i=1;i<=num;i++) if(num%i===0) divs++;
+  return makeMC('¿Cuántos divisores tiene el número '+num+'?', divs, 20, -2, 3);
+}
+
+// GEOMETRY
+function genGeo() {
+  var qs = [];
+  while (qs.length < TOTAL) {
+    var q = diff === 1 ? geoEasy() : diff === 2 ? geoMed() : geoHard();
+    if (q) qs.push(q);
+  }
+  return qs;
+}
+
+function geoEasy() {
+  var t=rand(0,3);
+  if(t===0){var l=rand(3,12),w=rand(2,10);return makeMC('Área de rectángulo '+l+'×'+w+' cm',l*w,30,-10,15);}
+  if(t===1){var l=rand(3,12);return makeMC('Área de cuadrado de lado '+l+' cm',l*l,30,-10,15);}
+  if(t===2){
+    var map={'Triángulo':3,'Cuadrado':4,'Pentágono':5,'Hexágono':6,'Heptágono':7,'Octágono':8};
+    var names=Object.keys(map), name=names[rand(0,names.length-1)];
+    return makeMC('¿Cuántos lados tiene un '+name+'?',map[name],30,-2,3);
+  }
+  var map={'triángulo':180,'cuadrado':360,'pentágono':540};
+  var names=Object.keys(map), n=names[rand(0,names.length-1)];
+  return makeMC('Suma de ángulos interiores de un '+n,map[n],30,-30,60);
+}
+
+function geoMed() {
+  var t=rand(0,3);
+  if(t===0){
+    var b=rand(4,12)*2,h=rand(3,10)*2;
+    return makeMC('Área de triángulo base '+b+' altura '+h,b*h/2,25,-5,10);
+  }
+  if(t===1){
+    var r=rand(2,8);
+    return makeInput('Área de círculo radio '+r+' cm\n(Escribe solo el número, sin π. Ej: si es 9π escribe 9)',r*r,25,'Área = π·r² = '+r+'² · π = '+(r*r)+'π');
+  }
+  if(t===2){var l=rand(3,10),h=rand(3,10),ans=l*h;return makeMC('Área de paralelogramo base '+l+' altura '+h,ans,25,-5,10);}
+  var n=rand(4,9),ans=(n-2)*180;
+  return makeMC('Suma ángulos de polígono de '+n+' lados',ans,25,-30,60,'Fórmula: (n-2)×180°');
+}
+
+function geoHard() {
+  var t=rand(0,2);
+  var pyth=[[3,4,5],[5,12,13],[8,15,17],[6,8,10]];
+  if(t===0){
+    var trio=pyth[rand(0,pyth.length-1)];
+    return makeMC('Triángulo rectángulo con catetos '+trio[0]+' y '+trio[1]+'.\n¿Cuánto mide la hipotenusa?',trio[2],20,-3,5,'Pitágoras: a²+b²=c²');
+  }
+  if(t===1){var s=rand(2,8);return makeMC('Área total de cubo de arista '+s+' cm',6*s*s,20,-20,40,'6 caras × s²');}
+  var n=rand(4,9),ans=(n-2)*180;
+  return makeInput('Suma de ángulos interiores de polígono de '+n+' lados',ans,20,'(n-2)×180 = '+(n-2)+'×180 = '+ans+'°');
+}
+
+// WORD PROBLEMS
+function genWord() {
+  var bank = [
+    {d:1,text:'Tengo 24 caramelos y los reparto en grupos de 4. \xbfCu\xe1ntos grupos?',ans:6,exp:'24 \xf7 4 = 6'},
+    {d:1,text:'Un tren va a 60 km/h. \xbfCu\xe1ntos km recorre en 2 horas?',ans:120,exp:'60 \xd7 2 = 120 km'},
+    {d:1,text:'Ana tiene 15\u20ac. Gasta 7\u20ac y le dan 5\u20ac. \xbfCu\xe1nto tiene?',ans:13,exp:'15 - 7 + 5 = 13\u20ac'},
+    {d:1,text:'Hay 5 filas de 8 sillas. \xbfCu\xe1ntas sillas en total?',ans:40,exp:'5 \xd7 8 = 40'},
+    {d:1,text:'Un libro tiene 120 p\xe1ginas. Leo 15 por d\xeda. \xbfEn cu\xe1ntos d\xedas lo termino?',ans:8,exp:'120 \xf7 15 = 8 d\xedas'},
+    {d:1,text:'Luc\xeda tiene 3 cajas con 9 l\xe1pices cada una. \xbfCu\xe1ntos l\xe1pices tiene en total?',ans:27,exp:'3 \xd7 9 = 27'},
+    {d:1,text:'Un cuadrado tiene lado 7 cm. \xbfCu\xe1nto mide su per\xedmetro?',ans:28,exp:'4 \xd7 7 = 28 cm'},
+    {d:1,text:'Si hay 32 alumnos y se forman grupos de 8, \xbfcu\xe1ntos grupos hay?',ans:4,exp:'32 \xf7 8 = 4 grupos'},
+    {d:1,text:'Un taxi cobra 2\u20ac por km. \xbfCu\xe1nto cuesta un viaje de 6 km?',ans:12,exp:'2 \xd7 6 = 12\u20ac'},
+    {d:1,text:'Hay 50 globos y explotan 18. \xbfCu\xe1ntos quedan?',ans:32,exp:'50 - 18 = 32'},
+    {d:1,text:'\xbfCu\xe1ntos minutos hay en 3 horas?',ans:180,exp:'3 \xd7 60 = 180 minutos'},
+    {d:1,text:'Si compro 4 cromos a 3\u20ac cada uno, \xbfcu\xe1nto pago?',ans:12,exp:'4 \xd7 3 = 12\u20ac'},
+    {d:1,text:'Un rect\xe1ngulo mide 9 cm de largo y 4 cm de ancho. \xbfCu\xe1l es su per\xedmetro?',ans:26,exp:'2\xd7(9+4) = 26 cm'},
+    {d:1,text:'\xbfCu\xe1ntos d\xedas hay en 4 semanas?',ans:28,exp:'7 \xd7 4 = 28 d\xedas'},
+    {d:1,text:'Una tienda tiene 200 camisetas. Vende 75. \xbfCu\xe1ntas le quedan?',ans:125,exp:'200 - 75 = 125'},
+    {d:1,text:'Si reparto 45 caramelos entre 9 ni\xf1os, \xbfcu\xe1ntos recibe cada uno?',ans:5,exp:'45 \xf7 9 = 5'},
+    {d:1,text:'Un autob\xfas tiene 6 ruedas. \xbfCu\xe1ntas ruedas tienen 7 autobuses?',ans:42,exp:'6 \xd7 7 = 42'},
+    {d:1,text:'\xbfCu\xe1ntos segundos hay en 2 minutos?',ans:120,exp:'2 \xd7 60 = 120 segundos'},
+    {d:1,text:'Tengo 100\u20ac. Gasto 37\u20ac y luego 28\u20ac m\xe1s. \xbfCu\xe1nto me queda?',ans:35,exp:'100 - 37 - 28 = 35\u20ac'},
+    {d:1,text:'Si hay 6 docenas de huevos, \xbfcu\xe1ntos huevos hay en total?',ans:72,exp:'6 \xd7 12 = 72 huevos'},
+    {d:2,text:'Un rect\xe1ngulo tiene per\xedmetro 36 cm y largo 10 cm. \xbfCu\xe1nto mide el ancho?',ans:8,exp:'2(10+a)=36 \u2192 a=8'},
+    {d:2,text:'El doble de un n\xfamero menos 5 es 23. \xbfCu\xe1l es el n\xfamero?',ans:14,exp:'2x-5=23 \u2192 x=14'},
+    {d:2,text:'En clase hay 30 alumnos. El 40% son ni\xf1as. \xbfCu\xe1ntos ni\xf1os hay?',ans:18,exp:'40% ni\xf1as=12, ni\xf1os=30-12=18'},
+    {d:2,text:'5 gatos cazan 5 ratones en 5 minutos.\n\xbfCu\xe1ntos ratones cazan 10 gatos en 10 minutos?',ans:20,exp:'Cada gato: 2 ratones en 10 min \u2192 10\xd72=20'},
+    {d:2,text:'La suma de tres n\xfameros consecutivos es 48. \xbfCu\xe1l es el mayor?',ans:17,exp:'n+(n+1)+(n+2)=48 \u2192 n=15, mayor=17'},
+    {d:2,text:'Un coche recorre 240 km en 3 horas. \xbfA qu\xe9 velocidad va?',ans:80,exp:'240 \xf7 3 = 80 km/h'},
+    {d:2,text:'\xbfCu\xe1nto es el 25% de 200?',ans:50,exp:'200 \xd7 0.25 = 50'},
+    {d:2,text:'Un n\xfamero multiplicado por 7 da 91. \xbfCu\xe1l es ese n\xfamero?',ans:13,exp:'91 \xf7 7 = 13'},
+    {d:2,text:'\xbfCu\xe1ntos cm hay en 1.5 metros?',ans:150,exp:'1.5 \xd7 100 = 150 cm'},
+    {d:2,text:'Un tri\xe1ngulo tiene \xe1ngulos de 60\xb0 y 80\xb0. \xbfCu\xe1nto mide el tercero?',ans:40,exp:'180 - 60 - 80 = 40\xb0'},
+    {d:2,text:'Si bajo el precio de 80\u20ac un 20%, \xbfcu\xe1nto cuesta ahora?',ans:64,exp:'80 - 80\xd70.20 = 64\u20ac'},
+    {d:2,text:'\xbfCu\xe1ntos n\xfameros pares hay entre 1 y 20?',ans:10,exp:'2,4,6,8,10,12,14,16,18,20 \u2192 10 n\xfameros'},
+    {d:2,text:'Un cubo tiene arista 4 cm. \xbfCu\xe1nto mide su volumen?',ans:64,exp:'4\xb3 = 64 cm\xb3'},
+    {d:2,text:'Hay 3 cajas con 12 bolas rojas y 8 azules cada una. \xbfCu\xe1ntas bolas en total?',ans:60,exp:'3 \xd7 (12+8) = 60'},
+    {d:2,text:'\xbfCu\xe1l es el MCM de 4 y 6?',ans:12,exp:'M\xfaltiplos de 4: 4,8,12... de 6: 6,12... \u2192 MCM=12'},
+    {d:2,text:'Una tienda tiene descuento del 30% en art\xedculos de 50\u20ac. \xbfCu\xe1nto se ahorra?',ans:15,exp:'50 \xd7 0.30 = 15\u20ac'},
+    {d:2,text:'Si un pol\xedgono tiene 8 lados iguales de 5 cm, \xbfcu\xe1nto mide su per\xedmetro?',ans:40,exp:'8 \xd7 5 = 40 cm'},
+    {d:2,text:'\xbfCu\xe1nto es 2\u2075?',ans:32,exp:'2\xd72\xd72\xd72\xd72 = 32'},
+    {d:2,text:'Si un tren sale a las 9:45 y llega a las 12:15, \xbfcu\xe1ntos minutos tarda?',ans:150,exp:'2h 30min = 150 minutos'},
+    {d:3,text:'Una piscina se llena en 6h con grifo A y 4h con grifo B.\n\xbfEn cu\xe1ntas horas se llena con los dos?',ans:2.4,exp:'1/6+1/4=5/12 \u2192 12/5=2.4h'},
+    {d:3,text:'\xbfCu\xe1ntos n\xfameros de 2 cifras son divisibles por 3 y por 5?',ans:6,exp:'M\xfaltiplos de 15 entre 10-99: 15,30,45,60,75,90 \u2192 6'},
+    {d:3,text:'\xbfCu\xe1ntos apretones de manos hay entre 5 personas\nsi cada una saluda a todas las dem\xe1s?',ans:10,exp:'C(5,2) = 5\xd74/2 = 10'},
+    {d:3,text:'\xbfCu\xe1l es la suma de todos los n\xfameros del 1 al 100?',ans:5050,exp:'Gauss: 100\xd7101/2 = 5050'},
+    {d:3,text:'Si f(x) = 2x + 3, \xbfcu\xe1nto es f(f(2))?',ans:17,exp:'f(2)=7, luego f(7)=17'},
+    {d:3,text:'\xbfCu\xe1ntos n\xfameros primos hay entre 1 y 30?',ans:10,exp:'2,3,5,7,11,13,17,19,23,29 \u2192 10 primos'},
+    {d:3,text:'La mitad de un n\xfamero m\xe1s 7 es igual a 20. \xbfCu\xe1l es el n\xfamero?',ans:26,exp:'x/2 + 7 = 20 \u2192 x=26'},
+    {d:3,text:'\xbfCu\xe1ntos divisores tiene el n\xfamero 36?',ans:9,exp:'1,2,3,4,6,9,12,18,36 \u2192 9 divisores'},
+    {d:3,text:'Si duplico un n\xfamero tres veces empezando por 5, \xbfqu\xe9 n\xfamero obtengo?',ans:40,exp:'5\u219210\u219220\u219240'},
+    {d:3,text:'Un n\xfamero es primo y tambi\xe9n es par. \xbfCu\xe1l es?',ans:2,exp:'El 2 es el \xfanico n\xfamero primo par'},
+    {d:3,text:'\xbfCu\xe1nto es 3\u2074?',ans:81,exp:'3\xd73\xd73\xd73 = 81'},
+    {d:3,text:'Un caracol sube 3m de d\xeda y baja 1m de noche.\n\xbfCu\xe1ntos d\xedas tarda en subir 10m?',ans:5,exp:'Avanza 2m netos al d\xeda: 10\xf72 = 5 d\xedas'},
+    {d:3,text:'\xbfCu\xe1l es el resultado de 1+2+4+8+16+32?',ans:63,exp:'Serie geom\xe9trica: 2\u2076-1 = 63'},
+    {d:3,text:'\xbfCu\xe1ntos m\xfaltiplos de 7 hay entre 1 y 100?',ans:14,exp:'7,14,21...98 \u2192 98\xf77=14'},
+    {d:3,text:'Si el per\xedmetro de un hex\xe1gono regular es 48 cm, \xbfcu\xe1nto mide cada lado?',ans:8,exp:'48 \xf7 6 = 8 cm'},
+    {d:3,text:'\xbfCu\xe1ntos n\xfameros de 3 cifras existen?',ans:900,exp:'Del 100 al 999 \u2192 999-100+1 = 900'},
+    {d:3,text:'\xbfCu\xe1ntos ceros tiene el n\xfamero 10\xb9\u2070?',ans:10,exp:'10\xb9\u2070 = 10.000.000.000 \u2192 10 ceros'},
+    {d:3,text:'\xbfCu\xe1ntos cuadrados hay en total en un tablero de ajedrez 8\xd78?',ans:204,exp:'Suma de cuadrados 1\xb2+2\xb2+...+8\xb2 = 204'},
+  ];
+  var pool = bank.filter(function(q){return q.d===diff;});
+  shuffle(pool);
+  return pool.slice(0, TOTAL).map(function(q) {
+    return makeMC(q.text, q.ans, diff===1?35:diff===2?30:25, diff===1?-8:-15, diff===1?10:20, q.exp);
+  });
+}
+
+// ── GAME FLOW ─────────────────────────────────────────────────
+function startGame() {
+  clearInterval(timerInterval);
+  score = 0; streak = 0; current = 0; correct = 0; wrong = 0;
+  updateStats();
+  document.getElementById('gameCard').style.display = '';
+  document.getElementById('resultsCard').classList.remove('show');
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').className = 'next-btn';
+
+  if (mode === 'arith') questions = genArith();
+  else if (mode === 'logic') questions = genLogic();
+  else if (mode === 'geo') questions = genGeo();
+  else questions = genWord();
+
+  buildDots();
+  showQuestion();
+}
+
+function buildDots() {
+  var d = document.getElementById('dots');
+  d.innerHTML = '';
+  for (var i = 0; i < TOTAL; i++) {
+    var el = document.createElement('div');
+    el.className = 'dot' + (i === 0 ? ' current' : '');
+    el.id = 'dot' + i;
+    d.appendChild(el);
+  }
+}
+
+function updateDot(i, ok) {
+  var d = document.getElementById('dot' + i);
+  if (!d) return;
+  d.classList.remove('current');
+  d.classList.add(ok ? 'done-ok' : 'done-bad');
+  var next = document.getElementById('dot' + (i + 1));
+  if (next) next.classList.add('current');
+}
+
+function showQuestion() {
+  answered = false;
+  var q = questions[current];
+  document.getElementById('qnum').textContent = (current+1)+'/'+TOTAL;
+  document.getElementById('questionText').textContent = q.text;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').className = 'next-btn';
+
+  var area = document.getElementById('answerArea');
+  if (q.type === 'mc') {
+    var letters = ['A','B','C','D'];
+    var html = '<div class="options">';
+    for (var i = 0; i < q.options.length; i++) {
+      html += '<button class="opt-btn" onclick="checkMC(this,\''+q.options[i]+'\')"><span class="opt-letter">'+letters[i]+'</span> '+q.options[i]+'</button>';
+    }
+    html += '</div>';
+    area.innerHTML = html;
+  } else {
+    area.innerHTML = '<div class="input-wrap"><input class="answer-input" type="number" id="ansInput" placeholder="Tu respuesta…" step="any"/><button class="submit-btn" onclick="checkInput()">✓ OK</button></div>';
+    document.getElementById('ansInput').addEventListener('keydown', function(e){ if(e.key==='Enter') checkInput(); });
+    setTimeout(function(){ var el=document.getElementById('ansInput'); if(el) el.focus(); }, 50);
+  }
+  startTimer(q.time);
+}
+
+function startTimer(sec) {
+  clearInterval(timerInterval);
+  timeLeft = sec; maxTime = sec;
+  updateTimerUI();
+  timerInterval = setInterval(function(){
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0) { clearInterval(timerInterval); timeOut(); }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  var pct = (timeLeft / maxTime) * 100;
+  var bar = document.getElementById('timerBar');
+  bar.style.width = pct + '%';
+  bar.className = 'timer-bar' + (pct < 30 ? ' urgent' : '');
+  document.getElementById('timerLabel').textContent = timeLeft;
+}
+
+function timeOut() {
+  if (answered) return;
+  answered = true; streak = 0; wrong++;
+  disableAnswers();
+  showFeedback(false, questions[current], 0);
+  updateDot(current, false);
+  updateStats();
+  document.getElementById('nextBtn').className = 'next-btn show';
+}
+
+function checkMC(btn, val) {
+  if (answered) return;
+  clearInterval(timerInterval);
+  answered = true;
+  var q = questions[current];
+  var ok = (val === q.answer);
+  btn.classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) {
+    var btns = document.querySelectorAll('.opt-btn');
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].textContent.trim().indexOf(q.answer) !== -1) btns[i].classList.add('correct');
+    }
+  }
+  disableAnswers();
+  processResult(ok, q);
+}
+
+function checkInput() {
+  if (answered) return;
+  var inp = document.getElementById('ansInput');
+  if (!inp || inp.value.trim() === '') return;
+  clearInterval(timerInterval);
+  answered = true;
+  var q = questions[current];
+  var ok = Math.abs(parseFloat(inp.value) - parseFloat(q.answer)) < 0.1;
+  inp.style.borderColor = ok ? 'var(--accent3)' : 'var(--accent1)';
+  processResult(ok, q);
+}
+
+function processResult(ok, q) {
+  if (ok) {
+    var bonus = Math.ceil(timeLeft / maxTime * 10);
+    var pts = 10 + bonus;
+    score += pts; streak++; correct++;
+    if (score > best) { best = score; localStorage.setItem('lucia_best', best); }
+    showFeedback(true, q, pts);
+  } else {
+    streak = 0; wrong++;
+    showFeedback(false, q, 0);
+  }
+  updateDot(current, ok);
+  updateStats();
+  document.getElementById('nextBtn').className = 'next-btn show';
+}
+
+function disableAnswers() {
+  var els = document.querySelectorAll('.opt-btn, .submit-btn, .answer-input');
+  for (var i = 0; i < els.length; i++) els[i].disabled = true;
+}
+
+function showFeedback(ok, q, pts) {
+  var fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+  document.getElementById('fbIcon').textContent = ok ? '✅' : '❌';
+  document.getElementById('fbText').innerHTML = ok
+    ? '<strong>¡Correcto! +'+pts+' puntos</strong><br>'+(q.explain||'')
+    : '<strong>¡Casi!</strong> La respuesta era <strong>'+q.answer+'</strong>.<br>'+(q.explain||'');
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= TOTAL) { showResults(); return; }
+  showQuestion();
+}
+
+function updateStats() {
+  document.getElementById('score').textContent = score;
+  document.getElementById('streak').textContent = streak;
+  document.getElementById('best').textContent = best;
+}
+
+function showResults() {
+  clearInterval(timerInterval);
+  document.getElementById('gameCard').style.display = 'none';
+  document.getElementById('resultsCard').classList.add('show');
+  var pct = correct / TOTAL;
+  var emoji, title, msg;
+  if (pct === 1) { emoji='🏆'; title='¡Lucía es perfecta!'; msg='¡Todo correcto! Eres una crack de las matemáticas, Lucía 🌟'; }
+  else if (pct >= 0.8) { emoji='🌟'; title='¡Increíble, Lucía!'; msg='Casi perfecta. Tu mente matemática no tiene límites 💜'; }
+  else if (pct >= 0.6) { emoji='🎯'; title='¡Muy bien, Lucía!'; msg='¡Gran ronda! Sigue así y serás imbatible 🚀'; }
+  else if (pct >= 0.4) { emoji='💪'; title='¡Tú puedes, Lucía!'; msg='Cada error te hace más lista. ¡Vuelve a intentarlo! ✨'; }
+  else { emoji='🌱'; title='¡Ánimo, Lucía!'; msg='Prueba el nivel fácil y ve subiendo poco a poco 💫'; }
+  document.getElementById('resEmoji').textContent = emoji;
+  document.getElementById('resTitle').textContent = title;
+  document.getElementById('resScore').textContent = score + ' pts';
+  document.getElementById('resDetail').textContent = correct+' correctas · '+wrong+' falladas · de '+TOTAL;
+  document.getElementById('resMsg').textContent = msg;
+  var badges = [];
+  if (correct === TOTAL) badges.push('🏆 Perfecta');
+  if (streak >= 5) badges.push('🔥 Racha ×5');
+  if (score > 150) badges.push('⭐ Super puntuación');
+  if (diff === 3 && pct >= 0.7) badges.push('🚀 Nivel experta');
+  document.getElementById('resBadges').innerHTML = badges.map(function(b){ return '<div class="badge earned">'+b+'</div>'; }).join('');
+}
+
+// START
+startGame();
+</script>
+
+
+</body></html>
